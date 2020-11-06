@@ -2,6 +2,8 @@
 using CitySearch.SampleData;
 using System.Collections.Generic;
 using CitySearch;
+using System;
+using System.Linq;
 
 namespace CS_MSUnitTests.Tests
 {
@@ -22,8 +24,7 @@ namespace CS_MSUnitTests.Tests
     {
 
         static CityFinder _cityfinder { get; set; }
-        //Before testing begins csv dataset of 3million+ records is loaded from FakeRepository
-
+        static List<string> AltString = "}!@#&()–[{}]:;',/?*'`".Select(x => x.ToString()).ToList();
 
 
         [TestClass]
@@ -33,6 +34,7 @@ namespace CS_MSUnitTests.Tests
             static List<string> _dataEx1;// { "BANGUI", "BANGKOK", "BANGALORE" };
             static List<string> _dataEx2;// {"LA PAZ", "LA PLATA", "LAGOS"}
             static List<string> _dataEx3;  // { "ZARIA", "ZHUGHAI", "ZIBO" };
+           
 
             [ClassInitialize()]
             public static void checkFakeRespostorySData(TestContext context)
@@ -65,7 +67,7 @@ namespace CS_MSUnitTests.Tests
                 _cityfinder = new CityFinder();
             }
 
-
+         
 
             [DataTestMethod]
             [DynamicData(nameof(GetLettersTestData_A), DynamicDataSourceType.Property)]
@@ -76,6 +78,8 @@ namespace CS_MSUnitTests.Tests
                 var actualLetters = results.NextLetters;
                 Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
             }
+
+       
 
 
             [DataTestMethod]
@@ -208,40 +212,20 @@ namespace CS_MSUnitTests.Tests
                     yield return new object[] { " Z", new List<string>() { } };
                 }
             }
-
-            [DataTestMethod]
-            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
-            public void AltKeyTest_Letters(string _input, List<string> _expected_Letters)
+            
+            [TestMethod]
+            public void AltKeyTest_Letters()
             {
-                var results = _cityfinder.Search(_input);
-                Assert.AreEqual(_expected_Letters.ToString(), results.NextLetters.ToString());
-            }
+             
+                foreach (var item in AltString)               {
 
-            [DataTestMethod]
-            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
-            public void AltKeyTest_Cities(string _input, List<string> _expectedCities)
-            {
-                var results = _cityfinder.Search(_input);
-                Assert.AreEqual(_expectedCities.ToString(), results.NextCities.ToString());
-            }
-
-            public static IEnumerable<object[]> GetAltTestData
-            {
-                get
-                {
-                    yield return new object[] { "/", new List<string>() { } };
-                    yield return new object[] { "?", new List<string>() { } };
-                    yield return new object[] { "#", new List<string>() { } };
-                    yield return new object[] { ";", new List<string>() { } };
-                    yield return new object[] { " ", new List<string>() { } };
-                    yield return new object[] { "-", new List<string>() { } };
-                    yield return new object[] { "+", new List<string>() { } };
-                    yield return new object[] { "1", new List<string>() { } };
-                    yield return new object[] { "!", new List<string>() { } };
+                    CityFinder.Dataset = _dataEx3;
+                    var results = _cityfinder.Search(item);
+                    Assert.AreEqual(new List<string>(){}.ToString(), results.NextLetters.ToString());
                 }
             }
 
-
+ 
         }
         //Test Methods using csv dataset begin here
 
@@ -250,7 +234,7 @@ namespace CS_MSUnitTests.Tests
         {
             //load data from worldcitiespop.csv
             static List<string> Csvdataset = FakeRepository.ParseCsvData;
-
+      
             [TestInitialize()]
             public void createCFobject()
             {
@@ -280,39 +264,18 @@ namespace CS_MSUnitTests.Tests
                 CityFinder.Dataset = null;
             }
 
-
-            [DataTestMethod]
-            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
-            public void AltKeyTest_Letters(string _input, List<string> _expected_Letters)
+       [TestMethod]
+            public void AltKeyTest_Letters()
             {
-                var results = _cityfinder.Search(_input);
-                Assert.AreEqual(_expected_Letters.ToString(), results.NextLetters.ToString());
-            }
 
-            [DataTestMethod]
-            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
-            public void AltKeyTest_Cities(string _input, List<string> _expectedCities)
-            {
-                var results = _cityfinder.Search(_input);
-                Assert.AreEqual(_expectedCities.ToString(), results.NextCities.ToString());
-            }
-
-            public static IEnumerable<object[]> GetAltTestData
-            {
-                get
+                foreach (var item in AltString)
                 {
-                    yield return new object[] { "/", new List<string>() { } };
-                    yield return new object[] { "?", new List<string>() { } };
-                    yield return new object[] { "#", new List<string>() { } };
-                    yield return new object[] { ";", new List<string>() { } };
-                    yield return new object[] { " ", new List<string>() { } };
-                    yield return new object[] { "-", new List<string>() { } };
-                    yield return new object[] { "+", new List<string>() { } };
-                    yield return new object[] { "1", new List<string>() { } };
-                    yield return new object[] { "!", new List<string>() { } };
+
+                    CityFinder.Dataset = Csvdataset;
+                    var results = _cityfinder.Search(item);
+                    Assert.AreEqual(new List<string>() { }.ToString(), results.NextLetters.ToString());
                 }
             }
-
 
         }
     }
