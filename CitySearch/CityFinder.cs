@@ -22,7 +22,7 @@ namespace CitySearch
         {
              //create  Cityresul  object
             CityResult cityresults = new CityResult();
-            if (searchString != null && searchString != "")
+            if (searchString != null && searchString != "" && searchString != " ")
             {
                 //convert curr search string to UpperCase
                 searchString = searchString.ToUpper();

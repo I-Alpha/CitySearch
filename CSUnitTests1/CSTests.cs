@@ -21,7 +21,7 @@ namespace CS_MSUnitTests.Tests
     //Ex 3 : { "ZARIA", "ZHUGHAI", "ZIBO" };
     {
 
-        static CityFinder _cityfinder { get;  set; }
+        static CityFinder _cityfinder { get; set; }
         //Before testing begins csv dataset of 3million+ records is loaded from FakeRepository
 
 
@@ -29,28 +29,33 @@ namespace CS_MSUnitTests.Tests
         [TestClass]
         public class QsheetTestCases
         {
-            [ClassInitialize()]
-            public static void checkQSData(TestContext context)
-            {
 
+            static List<string> _dataEx1;// { "BANGUI", "BANGKOK", "BANGALORE" };
+            static List<string> _dataEx2;// {"LA PAZ", "LA PLATA", "LAGOS"}
+            static List<string> _dataEx3;  // { "ZARIA", "ZHUGHAI", "ZIBO" };
+
+            [ClassInitialize()]
+            public static void checkFakeRespostorySData(TestContext context)
+            {
+                _cityfinder = new CityFinder();
                 Assert.IsNotNull(_cityfinder);
-                var _dataEx1 = FakeRepository.dataEx1;
-                var _dataEx2 = FakeRepository.dataEx2;
-                var _dataEx3 = FakeRepository.dataEx3;
+                _dataEx1 = FakeRepository.dataEx1; // { "BANGUI", "BANGKOK", "BANGALORE" };
+                _dataEx2 = FakeRepository.dataEx2; // {"LA PAZ", "LA PLATA", "LAGOS"}
+                _dataEx3 = FakeRepository.dataEx3;  // { "ZARIA", "ZHUGHAI", "ZIBO" };
                 Assert.IsInstanceOfType(_dataEx1, new List<string>().GetType());
                 Assert.IsInstanceOfType(_dataEx2, new List<string>().GetType());
                 Assert.IsInstanceOfType(_dataEx3, new List<string>().GetType());
                 CollectionAssert.AllItemsAreNotNull(_dataEx1);
                 CollectionAssert.AllItemsAreNotNull(_dataEx2);
                 CollectionAssert.AllItemsAreNotNull(_dataEx3);
-
             }
 
 
             [TestInitialize()]
-            public void createCFobject()
+            public void createCobject()
             {
                 _cityfinder = new CityFinder();
+
 
             }
 
@@ -62,247 +67,187 @@ namespace CS_MSUnitTests.Tests
 
 
 
-
-            //Test Methods using csv dataset end here
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseEx1_cities()
+            [DataTestMethod]
+            [DynamicData(nameof(GetLettersTestData_A), DynamicDataSourceType.Property)]
+            public void TestCase1Letters(string _input, List<string> _expectedLetters)
             {
-
-                var data = FakeRepository.dataEx1;
-                CityFinder.Dataset = data;
-                ICollection<string> expectedCities = new List<string>() { "BANGUI", "BANGKOK", "BANGALORE" };
-                var results = _cityfinder.Search("BANG");
-                var actualCities = results.NextCities;
-
-                /*if (expectedLetters == actualLetters || expectedCities==actualCities){
-
-                    Assert.IsFalse(false);
-                };*/
-
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-
-            }
-
-
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseEx1_letters()
-            {
-
-                var data = FakeRepository.dataEx1;
-                CityFinder.Dataset = data;
-                ICollection<string> expectedLetters = new List<string>() { "U", "K", "A" };
-                var results = _cityfinder.Search("BANG");
+                CityFinder.Dataset = _dataEx1;
+                var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
-
-                /*if (expectedLetters == actualLetters || expectedCities==actualCities){
-
-                    Assert.IsFalse(false);                };*/
-
-
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
+                Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
             }
 
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseEx2_cities()
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetCitiesTestData_A), DynamicDataSourceType.Property)]
+            public void TestCase1Cities(string _input, List<string> _expectedCities)
             {
-
-                var data = FakeRepository.dataEx2;
-                CityFinder.Dataset = data;
-
-
-
-                ICollection<string> expectedCities = new List<string>() { "LA PAZ", "LA PLATA", "LAGOS" };
-
-                var results = _cityfinder.Search("LA");
-
+                CityFinder.Dataset = _dataEx1;
+                var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
+                Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
+            }
+
+            public static IEnumerable<object[]> GetCitiesTestData_A
+            {
+                get
+                {
+                    yield return new object[] { "LA", new List<string>() { "LA PAZ", "LA PLATA", "LAGOS" } };
+                    yield return new object[] { "LA ", new List<string>() { "LA PAZ", "LA PLATA" } };
+                    yield return new object[] { "LA P", new List<string>() { "LA PAZ", "LA PLATA" } };
+                    yield return new object[] { "LAG", new List<string>() { "LAGOS" } };
+                    yield return new object[] { " ", new List<string>() { } };
+                }
+            }
+
+            public static IEnumerable<object[]> GetLettersTestData_A
+            {
+                get
+                {
+                    yield return new object[] { "LA", new List<string>() { "G", " ", " " } };
+                    yield return new object[] { "LA ", new List<string>() { "P", "P", "G" } };
+                    yield return new object[] { "LA P", new List<string>() { "A", "A" } };
+                    yield return new object[] { "", new List<string>() { } };
+                    yield return new object[] { " ", new List<string>() { } };
+                }
             }
 
 
-            [TestMethod()]
+
+
+
+
+            [DataTestMethod]
             [TestCategory("QSheetUseCases")]
-            public void TestCaseEx2_letters()
+            [DynamicData(nameof(GetLettersTestData_B), DynamicDataSourceType.Property)]
+            public void TestCase2Letters(string _input, List<string> _expectedLetters)
             {
-
-                var data = FakeRepository.dataEx2;
-                CityFinder.Dataset = data;
-
-
-                ICollection<string> expectedLetters = new List<string>() { "G", " " };
-                var results = _cityfinder.Search("LA");
+                CityFinder.Dataset = _dataEx2;
+                var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-
+                Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
             }
 
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseEx3_cities()
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetCitiesTestData_B), DynamicDataSourceType.Property)]
+            public void TestCase2Cities(string _input, List<string> _expectedCities)
             {
-
-                var data = FakeRepository.dataEx3;
-                CityFinder.Dataset = data;
-
-
-                ICollection<string> expectedCities = new List<string>() { };
-                var results = _cityfinder.Search("ZE");
-
+                CityFinder.Dataset = _dataEx2;
+                var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
+                Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
+            }
 
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
+            public static IEnumerable<object[]> GetCitiesTestData_B
+            {
+                get
+                {
+                    yield return new object[] { "BAN", new List<string>() { "BANGUI", "BANGKOK", "BANGALORE", "BADUNG" } };
+                    yield return new object[] { "BAN ", new List<string>() { } };
+                    yield return new object[] { "BANG", new List<string>() { "BANGUI", "BANGKOK", "BANGALORE" } };
+                    yield return new object[] { "", new List<string>() { } };
+                }
+            }
+
+            public static IEnumerable<object[]> GetLettersTestData_B
+            {
+                get
+                {
+                    yield return new object[] { "BAN", new List<string>() { "G", "G", "G", "U" } };
+                    yield return new object[] { "BAN ", new List<string>() { } };
+                    yield return new object[] { "BANG", new List<string>() { "U", "K", "A" } };
+                    yield return new object[] { "BANGK", new List<string>() { "O" } };
+                }
             }
 
 
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseEx3_letters()
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetLettersTestData_C), DynamicDataSourceType.Property)]
+            public void TestCase3Letters(string _input, List<string> _expectedLetters)
             {
-
-                var data = FakeRepository.dataEx3;
-                CityFinder.Dataset = data;
-
-                ICollection<string> expectedLetters = new List<string>() { };
-                var results = _cityfinder.Search("ZE");
+                CityFinder.Dataset = _dataEx3;
+                var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
+                Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
             }
 
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseConsecutiveInput()
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetCitiesTestData_C), DynamicDataSourceType.Property)]
+            public void TestCase3Cities(string _input, List<string> _expectedCities)
             {
-
-                var data = FakeRepository.dataEx1;
-                CityFinder.Dataset = data;
-
-                //cities
-                ICollection<string> expectedCities = new List<string>() { "BANGUI", "BANGKOK", "BANGALORE" };
-                var results = _cityfinder.Search("BANG");
+                CityFinder.Dataset = _dataEx3;
+                var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
-                //test cities
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-
-                //letters
-                ICollection<string> expectedLetters = new List<string>() { "U", "K", "A" };
-                var actualLetters = results.NextLetters;
-                //test letters
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-
-                //new call
-                results = _cityfinder.Search("BAN");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { "BANGUI", "BANGKOK", "BANGALORE", "BADUNG" };
-                expectedLetters = new List<string>() { "G", "G", "G", "U" };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-
-                //newcall spaced added
-                results = _cityfinder.Search("BAN ");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
+                Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
             }
-            [TestMethod()]
-            [TestCategory("QSheetUseCases")]
-            public void TestCaseAwkwardCharsInput()
+
+
+            public static IEnumerable<object[]> GetCitiesTestData_C
             {
-
-                var data = FakeRepository.dataEx1;
-                CityFinder.Dataset = data;
-
-                //cities
-                ICollection<string> expectedCities = new List<string>() { "BANGUI", "BANGKOK", "BANGALORE" };
-                var results = _cityfinder.Search("1");
-                var actualCities = results.NextCities;
-                //test cities
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-
-                //letters
-                ICollection<string> expectedLetters = new List<string>() { "U", "K", "A" };
-                var actualLetters = results.NextLetters;
-                //test letters
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-
-                //newcall spaced added
-                results = _cityfinder.Search(" ");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-                results = _cityfinder.Search("/");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-                results = _cityfinder.Search("*");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-                results = _cityfinder.Search("");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-                results = _cityfinder.Search("\\");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-                results = _cityfinder.Search(@"\");
-                actualCities = results.NextCities;
-                actualLetters = results.NextLetters;
-                expectedCities = new List<string>() { };
-                expectedLetters = new List<string>() { };
-                //test after new input
-                Assert.AreEqual(expectedCities.ToString(), actualCities.ToString());
-                Assert.AreEqual(expectedLetters.ToString(), actualLetters.ToString());
-
-
-
+                get
+                {// { "ZARIA", "ZHUGHAI", "ZIBO" };
+                    yield return new object[] { "Z", new List<string>() { "ZARIA", "ZHUGHAI", "ZIBO" } };
+                    yield return new object[] { "ZA", new List<string>() { "ZARIA" } };
+                    yield return new object[] { "Z", new List<string>() { "ZARIA", "ZHUGHAI", "ZIBO" } };
+                    yield return new object[] { "ZE", new List<string>() { } };
+                    yield return new object[] { " Z", new List<string>() { } };
+                }
             }
+
+            public static IEnumerable<object[]> GetLettersTestData_C
+            {
+                get
+                {
+                    yield return new object[] { "Z", new List<string>() { "A", "H", "I" } };
+                    yield return new object[] { "ZA", new List<string>() { "R" } };
+                    yield return new object[] { "Z", new List<string>() { "A", "H", "I" } };
+                    yield return new object[] { "ZE", new List<string>() { } };
+                    yield return new object[] { " Z", new List<string>() { } };
+                }
+            }
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
+            public void AltKeyTest_Letters(string _input, List<string> _expected_Letters)
+            {
+                var results = _cityfinder.Search(_input);
+                Assert.AreEqual(_expected_Letters.ToString(), results.NextLetters.ToString());
+            }
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
+            public void AltKeyTest_Cities(string _input, List<string> _expectedCities)
+            {
+                var results = _cityfinder.Search(_input);
+                Assert.AreEqual(_expectedCities.ToString(), results.NextCities.ToString());
+            }
+
+            public static IEnumerable<object[]> GetAltTestData
+            {
+                get
+                {
+                    yield return new object[] { "/", new List<string>() { } };
+                    yield return new object[] { "?", new List<string>() { } };
+                    yield return new object[] { "#", new List<string>() { } };
+                    yield return new object[] { ";", new List<string>() { } };
+                    yield return new object[] { " ", new List<string>() { } };
+                    yield return new object[] { "-", new List<string>() { } };
+                    yield return new object[] { "+", new List<string>() { } };
+                    yield return new object[] { "1", new List<string>() { } };
+                    yield return new object[] { "!", new List<string>() { } };
+                }
+            }
+
+
         }
+        //Test Methods using csv dataset begin here
 
-            //Test Methods using csv dataset begin here
-
-            [TestClass]
+        [TestClass]
         public class LargeDatasetTests
-        { 
+        {
             //load data from worldcitiespop.csv
             static List<string> Csvdataset = FakeRepository.ParseCsvData;
 
@@ -321,46 +266,56 @@ namespace CS_MSUnitTests.Tests
 
             [ClassInitialize]
             public static void LoadDataset(TestContext context)
-            {            
-              Assert.IsNotNull(Csvdataset);
-              CollectionAssert.AllItemsAreNotNull(Csvdataset);
-              CollectionAssert.AreNotEquivalent(new List<string>(),Csvdataset);
+            {
+                Assert.IsNotNull(Csvdataset);
+                CollectionAssert.AllItemsAreNotNull(Csvdataset);
+                CollectionAssert.AreNotEquivalent(new List<string>(), Csvdataset);
+                CityFinder.Dataset = FakeRepository.ParseCsvData;
             }
-             
+
             [ClassCleanup()]
-            public static void CleanStaticVariables() {
+            public static void CleanStaticVariables()
+            {
                 Csvdataset = null;
-            }         
-        
-
-            [TestMethod]
-            [TestCategory("CsvDataset")]
-            public void TestWith3milQuery1()
-            {
-
-                CityFinder.Dataset = Csvdataset;
-              
-
-                var results = _cityfinder.Search(" ");
-                ICollection<string> expectedVal = new List<string>() { };
-
-                Assert.AreEqual(expectedVal.ToString(), results.NextCities.ToString());
-                Assert.AreEqual(expectedVal.ToString(), results.NextLetters.ToString());
-
-
+                CityFinder.Dataset = null;
             }
 
-            [TestMethod()]
-            [TestCategory("CsvDataset")]
-            public void TestWith3milEmptyQuery()
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
+            public void AltKeyTest_Letters(string _input, List<string> _expected_Letters)
             {
-                CityFinder.Dataset = Csvdataset;
-               
-                var results = _cityfinder.Search("");
-                ICollection<string> expectedVal = new List<string>() { };
-                Assert.AreEqual(expectedVal.ToString(), results.NextCities.ToString());
-                Assert.AreEqual(expectedVal.ToString(), results.NextLetters.ToString());
+                var results = _cityfinder.Search(_input);
+                Assert.AreEqual(_expected_Letters.ToString(), results.NextLetters.ToString());
             }
+
+            [DataTestMethod]
+            [DynamicData(nameof(GetAltTestData), DynamicDataSourceType.Property)]
+            public void AltKeyTest_Cities(string _input, List<string> _expectedCities)
+            {
+                var results = _cityfinder.Search(_input);
+                Assert.AreEqual(_expectedCities.ToString(), results.NextCities.ToString());
+            }
+
+            public static IEnumerable<object[]> GetAltTestData
+            {
+                get
+                {
+                    yield return new object[] { "/", new List<string>() { } };
+                    yield return new object[] { "?", new List<string>() { } };
+                    yield return new object[] { "#", new List<string>() { } };
+                    yield return new object[] { ";", new List<string>() { } };
+                    yield return new object[] { " ", new List<string>() { } };
+                    yield return new object[] { "-", new List<string>() { } };
+                    yield return new object[] { "+", new List<string>() { } };
+                    yield return new object[] { "1", new List<string>() { } };
+                    yield return new object[] { "!", new List<string>() { } };
+                }
+            }
+
+
         }
     }
 }
+
+

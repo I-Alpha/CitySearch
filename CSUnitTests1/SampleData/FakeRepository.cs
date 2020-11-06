@@ -32,7 +32,7 @@ namespace CitySearch.SampleData
                         string[] fields = csvParser.ReadFields();
 
                         //add each item in country field to list
-                        listOfCities.Add(fields[1].ToUpper());
+                        listOfCities.Add(fields[0].ToUpper());
                     }
                 }
 
