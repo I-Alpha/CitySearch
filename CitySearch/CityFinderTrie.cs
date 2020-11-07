@@ -43,8 +43,8 @@ namespace CitySearch.Trie
 
 
     public class Trie
-    {   //This implementation of Trie search algorith taken was modified and taken from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
-
+    {   //This implementation of Trie search algorith taken was taken and modified from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
+        //MIT License : https://github.com/TomGullen/C-Sharp-Trie/blob/master/LICENSE
         private class Node
         {
             public bool Terminal { get; set; }
