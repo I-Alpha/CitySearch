@@ -99,6 +99,7 @@ namespace CS_MSUnitTests.Tests
                     yield return new object[] { "LA ", new List<string>() { "LA PAZ", "LA PLATA" } };
                     yield return new object[] { "LA P", new List<string>() { "LA PAZ", "LA PLATA" } };
                     yield return new object[] { "LAG", new List<string>() { "LAGOS" } };
+                    yield return new object[] { "LAGO", new List<string>() { "LAGOS" } };                   
                     yield return new object[] { " ", new List<string>() { } };
                 }
             }
@@ -110,6 +111,7 @@ namespace CS_MSUnitTests.Tests
                     yield return new object[] { "LA", new List<string>() { "G", " ", " " } };
                     yield return new object[] { "LA ", new List<string>() { "P", "P", "G" } };
                     yield return new object[] { "LA P", new List<string>() { "A", "A" } };
+                    yield return new object[] { "LAGO", new List<string>() { "S" } };
                     yield return new object[] { "", new List<string>() { } };
                     yield return new object[] { " ", new List<string>() { } };
                 }

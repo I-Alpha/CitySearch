@@ -19,7 +19,7 @@ namespace CitySearch.Trie
             //converts items in collection to uppercase and store
             set
             {
-                dataset = value.Select(v => v.ToUpper()).ToList();
+                dataset = value.Select(v => v).ToList();
                 trie = new Trie(dataset);
             }
         }
@@ -29,14 +29,12 @@ namespace CitySearch.Trie
         {
             //create  Cityresult  object
             CityResult cityresults = new CityResult();
+            var result = trie.GetSuggestions(searchString); 
+            var count = result.Length;
 
-            cityresults.NextCities = trie.GetAutocompleteSuggestions(searchString);
-
-            if (cityresults.NextCities.Count > 1)
-            {
-                //get subsequent char of each matched superstring
-                cityresults.NextLetters = cityresults.NextCities.Select(x => x[searchString.Length].ToString()).ToList(); // get first letter after length of substring of every char;
-            }
+            cityresults.NextCities = (ICollection<string>)result.First();             
+            if (cityresults.NextCities.Count > 1) cityresults.NextLetters = (ICollection<string>)result.ElementAt(1); 
+           
             return cityresults;
         }
     }
@@ -47,7 +45,8 @@ namespace CitySearch.Trie
         //MIT License : https://github.com/TomGullen/C-Sharp-Trie/blob/master/LICENSE
         private class Node
         {
-            public bool Terminal { get; set; }
+         
+            public bool End { get; set; }
             public Dictionary<char, Node> Nodes { get; private set; }
             public Node ParentNode { get; private set; }
             public char C { get; private set; }
@@ -70,26 +69,27 @@ namespace CitySearch.Trie
                     return b.ToString();
                 }
             }
+           
 
             public Node(Node parent, char c)
             {
                 C = c;
                 ParentNode = parent;
-                Terminal = false;
+                End = false;
                 Nodes = new Dictionary<char, Node>();
             }
 
             /// <summary>
-            /// Return list of terminal nodes under this node
+            /// Return list of end nodes under this node
             /// </summary>
-            public IEnumerable<Node> TerminalNodes(char? ignoreChar = null)
+            public IEnumerable<Node> EndNodes(char? ignoreChar = null)
             {
                 var r = new List<Node>();
-                if (Terminal) r.Add(this);
+                if (End) r.Add(this);
                 foreach (var node in Nodes.Values)
                 {
                     if (ignoreChar != null && node.C == ignoreChar) continue;
-                    r = r.Concat(node.TerminalNodes()).ToList();
+                    r = r.Concat(node.EndNodes()).ToList();
                 }
                 return r;
             }
@@ -109,7 +109,7 @@ namespace CitySearch.Trie
         /// <summary>
         /// Get list of all words in trie that start with
         /// </summary>
-        public List<string> GetAutocompleteSuggestions(string wordStart, int fetchMax = 100)
+        public object [] GetSuggestions(string wordStart, int fetchMax = 100)
         {
             if (fetchMax <= 0) throw new Exception("Fetch max must be positive integer.");
 
@@ -121,14 +121,14 @@ namespace CitySearch.Trie
             foreach (var c in wordStart)
             {
                 // Nothing starting with this word
-                if (!selectedNode.Nodes.ContainsKey(c)) return r.ToList();
+                if (!selectedNode.Nodes.ContainsKey(c)) return new[] { r.ToList(), new List<string>() {} } ;
                 selectedNode = selectedNode.Nodes[c];
             }
 
-            // Get terminal nodes for this node
+            // Get end nodes for this node
             {
-                var terminalNodes = selectedNode.TerminalNodes().Take(fetchMax);
-                foreach (var node in terminalNodes)
+                var endNodes = selectedNode.EndNodes().Take(fetchMax);
+                foreach (var node in endNodes)
                 {
                     r.Add(node.Word);
                 }
@@ -140,16 +140,18 @@ namespace CitySearch.Trie
                 var parentNode = selectedNode.ParentNode;
                 if (parentNode != null)
                 {
-                    var remainingToFetch = fetchMax - r.Count;
-                    var terminalNodes = parentNode.TerminalNodes(selectedNode.C).Take(remainingToFetch);
-                    foreach (var node in terminalNodes)
+                    var leftToFetch = fetchMax - r.Count;
+                    var endNodes = parentNode.EndNodes(selectedNode.C).Take(leftToFetch);
+                    foreach (var node in endNodes)
                     {
                         r.Add(node.Word);
                     }
                 }
-            }
+            }           
+            //get subsequent char of each matched superstring
+            var Endletters = r.Select(x => x[wordStart.Length].ToString()).ToList();  
 
-            return r.ToList();
+            return new[] { r.ToList(), Endletters };
         }
 
         /// <summary>
@@ -181,7 +183,7 @@ namespace CitySearch.Trie
                 }
                 selectedNode = selectedNode.Nodes[c];
             }
-            selectedNode.Terminal = true;
+            selectedNode.End = true;
         }
 
         /// <summary>
@@ -191,10 +193,8 @@ namespace CitySearch.Trie
         {
             if (String.IsNullOrWhiteSpace(word)) word = String.Empty;
             word = word.Trim();
-            if (!CaseSensitive)
-            {
-                word = word.Trim();
-            }
+            if (!CaseSensitive) word = word.Trim();
+       
             return word;
         }
 
@@ -211,7 +211,7 @@ namespace CitySearch.Trie
                 if (!selectedNode.Nodes.ContainsKey(c)) return false;
                 selectedNode = selectedNode.Nodes[c];
             }
-            return selectedNode.Terminal;
+            return selectedNode.End;
         }
     }
 }
