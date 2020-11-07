@@ -1,26 +1,26 @@
 ﻿using CitySearch.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
- 
+
 namespace CitySearch.Brute
 {
 
     public class CityFinder : ICityFinder
     {
-        
+
         private static ICollection<string> dataset = new List<string>();
 
-        public static ICollection<string> Dataset {            
+        public static ICollection<string> Dataset
+        {
             get { return dataset; }
             //converts items in collection to uppercase and store
             set { dataset = value.Select(v => v.ToUpper()).ToList(); }
         }
 
 
-        public ICityResult Search(string searchString=null)
+        public ICityResult Search(string searchString = null)
         {
-             //create  Cityresul  object
+            //create  Cityresul  object
             CityResult cityresults = new CityResult();
             if (searchString != null && searchString != "" && searchString != " ")
             {
@@ -42,6 +42,6 @@ namespace CitySearch.Brute
                 }
             }
             return cityresults;
-        }         
+        }
     }
 }

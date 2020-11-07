@@ -10,25 +10,27 @@ namespace CitySearch.Trie
 
     public class CityFinder : ICityFinder
     {
-        
-       private static ICollection<string> dataset = new List<string>();
-        private static Trie trie; 
-        public static ICollection<string> Dataset {            
+
+        private static ICollection<string> dataset = new List<string>();
+        private static Trie trie;
+        public static ICollection<string> Dataset
+        {
             get { return dataset; }
             //converts items in collection to uppercase and store
-            set {                
-                dataset  = value.Select(v => v.ToUpper()).ToList();
-                trie = new Trie(dataset); 
+            set
+            {
+                dataset = value.Select(v => v.ToUpper()).ToList();
+                trie = new Trie(dataset);
             }
         }
 
 
-        public ICityResult Search(string searchString=null)
+        public ICityResult Search(string searchString = null)
         {
-             //create  Cityresult  object
-             CityResult cityresults = new CityResult();
-             
-             cityresults.NextCities = trie.GetAutocompleteSuggestions(searchString);
+            //create  Cityresult  object
+            CityResult cityresults = new CityResult();
+
+            cityresults.NextCities = trie.GetAutocompleteSuggestions(searchString);
 
             if (cityresults.NextCities.Count > 1)
             {
@@ -36,13 +38,13 @@ namespace CitySearch.Trie
                 cityresults.NextLetters = cityresults.NextCities.Select(x => x[searchString.Length].ToString()).ToList(); // get first letter after length of substring of every char;
             }
             return cityresults;
-        }         
+        }
     }
 
-    //This implementation of Trie taken was modified and taken from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
-     
+
     public class Trie
-    {  
+    {   //This implementation of Trie search algorith taken was modified and taken from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
+
         private class Node
         {
             public bool Terminal { get; set; }
@@ -107,7 +109,7 @@ namespace CitySearch.Trie
         /// <summary>
         /// Get list of all words in trie that start with
         /// </summary>
-        public List<string> GetAutocompleteSuggestions(string wordStart, int fetchMax = 10)
+        public List<string> GetAutocompleteSuggestions(string wordStart, int fetchMax = 100)
         {
             if (fetchMax <= 0) throw new Exception("Fetch max must be positive integer.");
 

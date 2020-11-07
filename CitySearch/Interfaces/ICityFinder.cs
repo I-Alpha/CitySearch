@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CitySearch.Interfaces
-{ 
- public interface ICityFinder
+﻿namespace CitySearch.Interfaces
+{
+    public interface ICityFinder
     {
         ICityResult Search(string searchString);
     }

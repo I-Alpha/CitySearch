@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CitySearch.SampleData;
-using System.Collections.Generic;
-using CitySearch;
-using System;
-using System.Linq;
+﻿using CitySearch.SampleData;
 using CitySearch.Trie;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CS_MSUnitTests.Tests
 {
@@ -35,7 +33,7 @@ namespace CS_MSUnitTests.Tests
             static List<string> _dataEx1;// { "BANGUI", "BANGKOK", "BANGALORE" };
             static List<string> _dataEx2;// {"LA PAZ", "LA PLATA", "LAGOS"}
             static List<string> _dataEx3;  // { "ZARIA", "ZHUGHAI", "ZIBO" };
-           
+
 
             [ClassInitialize()]
             public static void checkFakeRespostorySData(TestContext context)
@@ -68,7 +66,7 @@ namespace CS_MSUnitTests.Tests
                 _cityfinder = new CityFinder();
             }
 
-         
+
 
             [DataTestMethod]
             [DynamicData(nameof(GetLettersTestData_A), DynamicDataSourceType.Property)]
@@ -80,7 +78,7 @@ namespace CS_MSUnitTests.Tests
                 Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
             }
 
-       
+
 
 
             [DataTestMethod]
@@ -117,13 +115,7 @@ namespace CS_MSUnitTests.Tests
                 }
             }
 
-
-
-
-
-
             [DataTestMethod]
-            [TestCategory("QSheetUseCases")]
             [DynamicData(nameof(GetLettersTestData_B), DynamicDataSourceType.Property)]
             public void TestCase2Letters(string _input, List<string> _expectedLetters)
             {
@@ -213,20 +205,43 @@ namespace CS_MSUnitTests.Tests
                     yield return new object[] { " Z", new List<string>() { } };
                 }
             }
-            
+
             [TestMethod]
             public void AltKeyTest_Letters()
             {
-             
-                foreach (var item in AltString)               {
 
-                    CityFinder.Dataset = _dataEx3;
-                    var results = _cityfinder.Search(item);
-                    Assert.AreEqual(new List<string>(){}.ToString(), results.NextLetters.ToString());
+                foreach (var chunk in new[] { _dataEx1, _dataEx2, _dataEx3 })
+                {
+
+                    CityFinder.Dataset = chunk;
+
+                    foreach (var item in AltString)
+                    {
+
+                        var results = _cityfinder.Search(item);
+                        Assert.AreEqual(new List<string>() { }.ToString(), results.NextLetters.ToString());
+                    }
+
                 }
             }
 
- 
+            [TestMethod]
+            public void AltKeyTest_Cities()
+            {
+
+                foreach (var chunk in new[] { _dataEx1, _dataEx2, _dataEx3 })
+                {
+
+                    CityFinder.Dataset = chunk;
+                    foreach (var item in AltString)
+                    {
+                        var results = _cityfinder.Search(item);
+                        Assert.AreEqual(new List<string>() { }.ToString(), results.NextCities.ToString());
+                    }
+                }
+            }
+
+
         }
         //Test Methods using csv dataset begin here
 
@@ -235,7 +250,7 @@ namespace CS_MSUnitTests.Tests
         {
             //load data from worldcitiespop.csv
             static List<string> Csvdataset = FakeRepository.ParseCsvData;
-      
+
             [TestInitialize()]
             public void createCFobject()
             {
@@ -265,18 +280,30 @@ namespace CS_MSUnitTests.Tests
                 CityFinder.Dataset = null;
             }
 
-       [TestMethod]
+            [TestMethod]
             public void AltKeyTest_Letters()
             {
 
                 foreach (var item in AltString)
-                {                     
+                {
                     var results = _cityfinder.Search(item);
                     Assert.AreEqual(new List<string>() { }.ToString(), results.NextLetters.ToString());
                 }
             }
 
+            [TestMethod]
+            public void AltKeyTest_Cities()
+            {
+
+                foreach (var item in AltString)
+                {
+                    var results = _cityfinder.Search(item);
+                    Assert.AreEqual(new List<string>() { }.ToString(), results.NextCities.ToString());
+                }
+            }
         }
+
+
     }
 }
 

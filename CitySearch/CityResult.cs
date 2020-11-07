@@ -1,11 +1,12 @@
 ﻿using CitySearch.Interfaces;
 using System.Collections.Generic;
- 
+
 namespace CitySearch
 {
     public class CityResult : ICityResult
     {
-        public CityResult() {
+        public CityResult()
+        {
             NextCities = new List<string>();
             NextLetters = new List<string>();
         }

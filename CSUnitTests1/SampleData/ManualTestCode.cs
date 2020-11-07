@@ -1,13 +1,11 @@
-
-using CitySearch;
 using CitySearch.SampleData;
 using CitySearch.Trie;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CitySearch 
-    {
+namespace CitySearch
+{
 
     public class ManualTest
     {
@@ -20,11 +18,11 @@ namespace CitySearch
         public ManualTest()
         {
             CityFinder.Dataset = Csvdataset;
-            ManualTestMethod1();
+            ManualTestMethod();
         }
 
 
-        public void ManualTestMethod1()
+        public void ManualTestMethod()
         {
             CityFinder _cityfinder = new CityFinder();
             string searchInput = null;
@@ -32,7 +30,7 @@ namespace CitySearch
 
             Console.WriteLine("\n\nPlease Begin typing Search String : ");
             //print after every key input 
-             
+
             ConsoleKeyInfo keyinfo;
             do
             {

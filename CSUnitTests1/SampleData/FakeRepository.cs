@@ -1,4 +1,4 @@
-﻿ 
+﻿
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ namespace CitySearch.SampleData
 {
     public class FakeRepository
     {
-        private const string csvpath = @"..\..\..\SampleData\worldcitiespop.csv"; 
+        private const string csvpath = @"..\..\..\SampleData\worldcitiespop.csv";
         public static List<string> dataEx1 = new List<string>() { "BANDUNG", "BANGUI", "BANGKOK", "BANGALORE" };
         public static List<string> dataEx2 = new List<string>() { "LA PAZ", "LA PLATA", "LAGOS", "LEEDS" };
         public static List<string> dataEx3 = new List<string>() { "ZARIA", "ZHUGHAI", "ZIBO" };
@@ -25,7 +25,7 @@ namespace CitySearch.SampleData
 
                     //skip header row
                     csvParser.ReadFields();
- 
+
                     while (!csvParser.EndOfData)
                     {
                         // Read current line fields, pointer moves to the next line.
@@ -40,6 +40,6 @@ namespace CitySearch.SampleData
 
             }
         }
-        public static string Csvpath => csvpath;       
+        public static string Csvpath => csvpath;
     }
 }
