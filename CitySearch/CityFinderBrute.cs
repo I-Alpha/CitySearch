@@ -5,7 +5,7 @@ using System.Linq;
 namespace CitySearch.Brute
 {
 
-    public class CityFinderBrute : ICityFinder
+    public class CityFinder : ICityFinder
     {
 
         private static ICollection<string> dataset = new List<string>();
