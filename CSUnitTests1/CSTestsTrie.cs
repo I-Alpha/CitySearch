@@ -4,11 +4,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CS_MSUnitTests.Tests
+namespace CS_MSUnitTests.Tests.Trie
 {
 
     [TestClass()]
-    public class CSTests
+    public class CSTestsTrie
     //These are basic unit tests.  Seven test methods.
 
     //methods TestWith3mil- loads performs search tests using sample data of 3million+ records
