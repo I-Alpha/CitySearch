@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CitySearch;
 using System;
 using System.Linq;
+using CitySearch.Trie;
 
 namespace CS_MSUnitTests.Tests
 {
@@ -269,9 +270,7 @@ namespace CS_MSUnitTests.Tests
             {
 
                 foreach (var item in AltString)
-                {
-
-                    CityFinder.Dataset = Csvdataset;
+                {                     
                     var results = _cityfinder.Search(item);
                     Assert.AreEqual(new List<string>() { }.ToString(), results.NextLetters.ToString());
                 }

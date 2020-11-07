@@ -1,6 +1,7 @@
 
 using CitySearch;
 using CitySearch.SampleData;
+using CitySearch.Trie;
 using System;
 using System.Collections.Generic;
 using System.Linq;
