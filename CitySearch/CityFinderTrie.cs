@@ -39,9 +39,8 @@ namespace CitySearch.Trie
         }         
     }
 
-    //#implementation of Trie taken from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
-    // Copyright(c) 2016 Scirra Ltd
-    //www.scirra.com
+    //This implementation of Trie taken was modified and taken from: https://github.com/TomGullen/C-Sharp-Trie/tree/master
+     
     public class Trie
     {  
         private class Node
