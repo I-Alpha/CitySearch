@@ -8,7 +8,7 @@ using System.Text;
 namespace CitySearch.Trie
 {
 
-    public class CityFinderTrie: ICityFinder
+    public class CityFinderTrie : ICityFinder
     {
         static ICityResult cityresults;
         private static ICollection<string> dataset = new List<string>();
@@ -29,13 +29,13 @@ namespace CitySearch.Trie
         {
             //create  Cityresult  object
             cityresults = new CityResult();
-            var result = trie.GetSuggestions(searchString); 
-            var count = result.Length;
-
-            cityresults.NextCities = (ICollection<string>)result.First();             
-            if (cityresults.NextCities.Count > 1) cityresults.NextLetters = (ICollection<string>)result.ElementAt(1); 
-           
+            SetThisResult(trie.GetSuggestions(searchString));             
             return cityresults;
+        }
+        private void SetThisResult(object[] result) {
+            cityresults.NextCities = (ICollection<string>)result.First();
+            if (cityresults.NextCities.Count > 1)
+                cityresults.NextLetters = (ICollection<string>)result.ElementAt(1);
         }
 
 

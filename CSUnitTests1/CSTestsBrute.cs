@@ -24,7 +24,7 @@ namespace CS_MSUnitTests.Tests.Brute
     {
 
         static ICityFinder _cityfinder { get; set; }
-        static List<string> AltString = "}!@#&()–[{}]:;',/?*'`".Select(x => x.ToString()).ToList();
+        static List<string> AltString = "}\a[0-9]\\!@#&()–[{}]:;',/?*'`".Select(x => x.ToString()).ToList();
 
 
         [TestClass]

@@ -8,8 +8,11 @@ namespace CitySearch
         public CityResult()
         {
             NextCities = new List<string>();
-            NextLetters = new List<string>();
+            NextLetters = new List<string>();        
         }
+
+ 
+
         public ICollection<string> NextLetters { get; set; }
         public ICollection<string> NextCities { get; set; }
     }
