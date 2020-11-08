@@ -1,5 +1,7 @@
+using CitySearch.Interfaces;
 using CitySearch.SampleData;
 using CitySearch.Trie;
+using CitySearch.Brute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +12,23 @@ namespace CitySearch
     public class ManualTest
     {
         //This is manual input test code that uses the large sample database 
-
+        ICityFinder  _cityfinder ;
         static List<string> Csvdataset = FakeRepository.ParseCsvData;
         //Before testing begins csv dataset of 3million+ records is loaded from FakeRepository
 
 
         public ManualTest()
-        {
-            CityFinder.Dataset = Csvdataset;
+        {  
+            
+            CityFinderBrute.Dataset = Csvdataset;
+            _cityfinder = new CityFinderBrute();
             ManualTestMethod();
         }
 
 
         public void ManualTestMethod()
         {
-            CityFinder _cityfinder = new CityFinder();
+            
             string searchInput = null;
             Console.WriteLine("\n\n---Data Loaded!---\n\n");
 

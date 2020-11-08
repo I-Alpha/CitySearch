@@ -1,4 +1,5 @@
-﻿using CitySearch.SampleData;
+﻿using CitySearch.Interfaces;
+using CitySearch.SampleData;
 using CitySearch.Trie;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -22,11 +23,11 @@ namespace CS_MSUnitTests.Tests.Trie
     //Ex 3 : { "ZARIA", "ZHUGHAI", "ZIBO" };
     {
 
-        static CityFinder _cityfinder { get; set; }
+        static ICityFinder _cityfinder { get; set; }
         static List<string> AltString = "}!@#&()–[{}]:;',/?*'`".Select(x => x.ToString()).ToList();
 
 
-        [TestClass]
+        [TestClass()]
         public class QsheetTestCases
         {
 
@@ -38,7 +39,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [ClassInitialize()]
             public static void checkFakeRespostorySData(TestContext context)
             {
-                _cityfinder = new CityFinder();
+                _cityfinder = new CityFinderTrie();
                 Assert.IsNotNull(_cityfinder);
                 _dataEx1 = FakeRepository.dataEx1; // { "BANGUI", "BANGKOK", "BANGALORE" };
                 _dataEx2 = FakeRepository.dataEx2; // {"LA PAZ", "LA PLATA", "LAGOS"}
@@ -55,7 +56,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [TestInitialize()]
             public void createCobject()
             {
-                _cityfinder = new CityFinder();
+                _cityfinder = new CityFinderTrie();
 
 
             }
@@ -63,7 +64,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [TestCleanup()]
             public void cleanStaticVariables()
             {
-                _cityfinder = new CityFinder();
+                _cityfinder = new CityFinderTrie();
             }
 
 
@@ -72,7 +73,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetLettersTestData_A), DynamicDataSourceType.Property)]
             public void TestCase1Letters(string _input, List<string> _expectedLetters)
             {
-                CityFinder.Dataset = _dataEx1;
+                CityFinderTrie.Dataset = _dataEx1;
                 var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
                 Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
@@ -85,7 +86,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetCitiesTestData_A), DynamicDataSourceType.Property)]
             public void TestCase1Cities(string _input, List<string> _expectedCities)
             {
-                CityFinder.Dataset = _dataEx1;
+                CityFinderTrie.Dataset = _dataEx1;
                 var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
                 Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
@@ -121,7 +122,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetLettersTestData_B), DynamicDataSourceType.Property)]
             public void TestCase2Letters(string _input, List<string> _expectedLetters)
             {
-                CityFinder.Dataset = _dataEx2;
+                CityFinderTrie.Dataset = _dataEx2;
                 var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
                 Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
@@ -132,7 +133,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetCitiesTestData_B), DynamicDataSourceType.Property)]
             public void TestCase2Cities(string _input, List<string> _expectedCities)
             {
-                CityFinder.Dataset = _dataEx2;
+                CityFinderTrie.Dataset = _dataEx2;
                 var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
                 Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
@@ -166,7 +167,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetLettersTestData_C), DynamicDataSourceType.Property)]
             public void TestCase3Letters(string _input, List<string> _expectedLetters)
             {
-                CityFinder.Dataset = _dataEx3;
+                CityFinderTrie.Dataset = _dataEx3;
                 var results = _cityfinder.Search(_input);
                 var actualLetters = results.NextLetters;
                 Assert.AreEqual(_expectedLetters.ToString(), actualLetters.ToString());
@@ -177,7 +178,7 @@ namespace CS_MSUnitTests.Tests.Trie
             [DynamicData(nameof(GetCitiesTestData_C), DynamicDataSourceType.Property)]
             public void TestCase3Cities(string _input, List<string> _expectedCities)
             {
-                CityFinder.Dataset = _dataEx3;
+                CityFinderTrie.Dataset = _dataEx3;
                 var results = _cityfinder.Search(_input);
                 var actualCities = results.NextCities;
                 Assert.AreEqual(_expectedCities.ToString(), actualCities.ToString());
@@ -215,7 +216,7 @@ namespace CS_MSUnitTests.Tests.Trie
                 foreach (var chunk in new[] { _dataEx1, _dataEx2, _dataEx3 })
                 {
 
-                    CityFinder.Dataset = chunk;
+                    CityFinderTrie.Dataset = chunk;
 
                     foreach (var item in AltString)
                     {
@@ -234,7 +235,7 @@ namespace CS_MSUnitTests.Tests.Trie
                 foreach (var chunk in new[] { _dataEx1, _dataEx2, _dataEx3 })
                 {
 
-                    CityFinder.Dataset = chunk;
+                    CityFinderTrie.Dataset = chunk;
                     foreach (var item in AltString)
                     {
                         var results = _cityfinder.Search(item);
@@ -256,14 +257,14 @@ namespace CS_MSUnitTests.Tests.Trie
             [TestInitialize()]
             public void createCFobject()
             {
-                _cityfinder = new CityFinder();
+                _cityfinder = new CityFinderTrie();
 
             }
 
             [TestCleanup()]
             public void cleanStaticVariables()
             {
-                _cityfinder = new CityFinder();
+                _cityfinder = new CityFinderTrie();
             }
 
             [ClassInitialize]
@@ -272,14 +273,14 @@ namespace CS_MSUnitTests.Tests.Trie
                 Assert.IsNotNull(Csvdataset);
                 CollectionAssert.AllItemsAreNotNull(Csvdataset);
                 CollectionAssert.AreNotEquivalent(new List<string>(), Csvdataset);
-                CityFinder.Dataset = FakeRepository.ParseCsvData;
+                CityFinderTrie.Dataset = FakeRepository.ParseCsvData;
             }
 
             [ClassCleanup()]
             public static void CleanStaticVariables()
             {
                 Csvdataset = null;
-                CityFinder.Dataset = null;
+                CityFinderTrie.Dataset = null;
             }
 
             [TestMethod]

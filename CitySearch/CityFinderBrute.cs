@@ -5,9 +5,9 @@ using System.Linq;
 namespace CitySearch.Brute
 {
 
-    public class CityFinder : ICityFinder
+    public class CityFinderBrute: ICityFinder
     {
-
+        ICityResult cityresults;
         private static ICollection<string> dataset = new List<string>();
 
         public static ICollection<string> Dataset
@@ -21,7 +21,7 @@ namespace CitySearch.Brute
         public ICityResult Search(string searchString = null)
         {
             //create  Cityresul  object
-            CityResult cityresults = new CityResult();
+            cityresults = new CityResult();
             if (searchString != null && searchString != "" && searchString != " ")
             {
                 //convert curr search string to UpperCase
